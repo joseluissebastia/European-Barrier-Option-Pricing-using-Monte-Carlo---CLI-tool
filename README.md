@@ -53,10 +53,10 @@ Suppose we have a contract with the following specifications:
 6. Time left to maturity in years: 1
 7. annual volatility (between 0 and 1): 0.25 (25%)
 8. annual risk free rate: 0.04 (4%)
+
+and we want 10000 simulations with 10000 steps each
+
 9. number of steps in each simulated path: 10000
-
-and we want 10000 simulations 
-
 10. number of simulations: 10000
 
 In order to use the CLI tool, we must cd to the directory that contains the barrier_options.py file.
@@ -76,8 +76,8 @@ Barrier price:                  150.0
 Time to maturity (in years):    1.0
 Annual volatility:              0.25
 Annual risk free rate:          0.04
-Number of steps:                10000
 
+Number of steps:                10000
 Number of simulations:          10000
 
 Estimated contract value: 6.28577080873023

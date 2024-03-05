@@ -4,7 +4,7 @@ import sys
 import argparse
 
 class BarrierOption():
-    def __init__(self, option_type, barrier_type, S0, K, B, T, volatility, risk_free_rate, steps) -> None:
+    def __init__(self, option_type, barrier_type, S0, K, B, T, volatility, risk_free_rate) -> None:
         """
         Parameters
         ----------
@@ -38,7 +38,6 @@ class BarrierOption():
         self.T              = T
         self.volatility     = volatility
         self.risk_free_rate = risk_free_rate
-        self.steps          = steps
     
 
     def contract_specification(self) -> None:
@@ -55,7 +54,6 @@ class BarrierOption():
         print(f"Time to maturity (in years):    {self.T}")
         print(f"Annual volatility:              {self.volatility}")
         print(f"Annual risk free rate:          {self.risk_free_rate}")
-        print(f"Number of steps:                {self.steps}")
     
 
     def present_value(self, value):
@@ -156,7 +154,7 @@ class BarrierOption():
         return payoff
 
 
-    def monte_carlo_pricing(self, num_iters, plot=False, seed=None) -> float:
+    def monte_carlo_pricing(self, steps, num_iters, plot=False, seed=None) -> float:
         """
         Calculate the value of the european barrier option using Monte Carlo simulations
 
@@ -174,9 +172,9 @@ class BarrierOption():
             np.random.seed(seed)
         
         #Geometric Brownian Motion
-        step_volatility = self.volatility*np.sqrt(self.T/self.steps) 
-        Z = np.random.normal(size=(num_iters, self.steps)) 
-        end_of_step_price = self.S0*np.cumprod(np.exp((self.risk_free_rate - 0.5*self.volatility**2)*(self.T/self.steps) + step_volatility*Z), axis=1)
+        step_volatility = self.volatility*np.sqrt(self.T/steps) 
+        Z = np.random.normal(size=(num_iters, steps)) 
+        end_of_step_price = self.S0*np.cumprod(np.exp((self.risk_free_rate - 0.5*self.volatility**2)*(self.T/steps) + step_volatility*Z), axis=1)
         end_of_step_price = np.concatenate((self.S0*np.ones((num_iters,1)), end_of_step_price), axis=1)
 
         payoffs = self.contract_payoff(end_of_step_price)
@@ -186,7 +184,7 @@ class BarrierOption():
 
         if plot == True:
             for iter in range(num_iters):
-                plt.plot(np.linspace(0,self.T,self.steps + 1), end_of_step_price[iter])
+                plt.plot(np.linspace(0,self.T,steps + 1), end_of_step_price[iter])
              
             plt.xlabel('Time')
             plt.ylabel('Price')
@@ -242,10 +240,11 @@ def cli():
     steps          = args.steps
     num_iters      = args.num_iters
 
-    option = BarrierOption(option_type, barrier_type, S0, K, B, T, volatility, risk_free_rate, steps)
+    option = BarrierOption(option_type, barrier_type, S0, K, B, T, volatility, risk_free_rate)
     option.contract_specification()
-    print(f"\nNumber of simulations:          {num_iters}")
-    option.monte_carlo_pricing(num_iters, plot=True)
+    print(f"\nNumber of steps:                {steps}")
+    print(f"Number of simulations:          {num_iters}")
+    option.monte_carlo_pricing(steps, num_iters, plot=True)
 
 
 
