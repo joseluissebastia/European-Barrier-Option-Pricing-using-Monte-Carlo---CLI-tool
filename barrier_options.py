@@ -16,7 +16,6 @@ class BarrierOption():
             T              (float): time to maturity in years
             volatility     (float): annual volatility of underlying
             risk_free_rate (float): annual risk free rate
-            steps            (int): number of steps
         """
         if option_type != "call" and option_type != "put":
             print('Error!\nPlease make sure option_type="call" or option_type="put"')
